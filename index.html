@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Einkaufsliste Cloud</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>Einkaufsliste</h1>
+  <nav>
+  <button id="exportJSON">💾 Exportieren</button>
+  </nav>
+  <nav>
+  <button id="importJSON">📂 Importieren</button>
+  </nav>
+  <nav>
+      <a href="https://github.com/DGrothe-PhD/Einkaufsliste/">
+      <img src="./assets/GitHub.svg" width="40" height="40" alt="GitHub"/>
+      </a>
+    </nav>
+  </header>
+  <div class="container">
+    <div class="product-list">
+     <h2>Einkaufsliste</h2>
+      
+      <div class="add-bar">
+        <input type="text" class="add-input" id="addProductInput" placeholder="Produkt hinzufügen...">
+        <button class="add-btn" id="addProductBtn">+</button>
+      </div>
+      <div id="productList"></div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+    <div class="done-list">
+       <div class="product-list">
+       <h2>Einkaufen bitte</h2>
+      <div class="add-bar">
+        <input type="text" class="add-input" id="addDoneInput" placeholder="...">
+        <button class="add-btn" id="addDoneBtn">+</button>
+      </div>
+      <div id="doneList"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./localengine.js">
+  </script>
+</body>
+</html>
