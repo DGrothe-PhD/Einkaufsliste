@@ -134,34 +134,41 @@ function renderList() {
 	done.innerHTML = '';
 
 	products.forEach(prod => {
-		if (prod.count > 0) {
-			const item  = document.createElement('div'); item.className = 'product-item';
-			const label = document.createElement('span'); label.textContent = prod.name;
+		const item  = document.createElement('div'); item.className = 'product-item';
+		const label = document.createElement('span'); label.textContent = prod.name;
 
-			const controls = document.createElement('div'); controls.className = 'controls';
-			const upBtn    = document.createElement('button'); upBtn.className = 'arrow-btn'; upBtn.innerHTML = '▲'; upBtn.onclick = () => setCount(prod.id, +1);
-			const downBtn  = document.createElement('button'); downBtn.className = 'arrow-btn'; downBtn.innerHTML = '▼'; downBtn.onclick = () => setCount(prod.id, -1);
-			const count    = document.createElement('span'); count.className = 'count'; count.textContent = prod.count;
-			controls.append(upBtn, count, downBtn);
+		const controls = document.createElement('div'); controls.className = 'controls';
+		const upBtn    = document.createElement('button'); upBtn.className = 'arrow-btn'; upBtn.innerHTML = '▲'; upBtn.onclick = () => setCount(prod.id, +1);
+		const downBtn  = document.createElement('button'); downBtn.className = 'arrow-btn'; downBtn.innerHTML = '▼'; downBtn.onclick = () => setCount(prod.id, -1);
+		const count    = document.createElement('span'); count.className = 'count'; count.textContent = prod.count;
+		controls.append(upBtn, count, downBtn);
 
-			const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.innerHTML = '−'; deleteBtn.onclick = () => deleteProduct(prod.id);
+		const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.innerHTML = '−'; deleteBtn.onclick = () => deleteProduct(prod.id);
 
-			item.append(label, controls, deleteBtn);
-			list.appendChild(item);
-		} else {
-			const item = document.createElement('div'); item.className = 'done-item';
+		item.append(label, controls, deleteBtn);
+		list.appendChild(item);
+		
+		if(prod.count > 0){
+			const doneItem = document.createElement('div'); doneItem.className = 'done-item';
 			const left = document.createElement('div'); left.style.display = 'flex'; left.style.alignItems = 'center';
 
-			const checkbox   = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.className = 'done-checkbox';
-			checkbox.checked = prod.done; checkbox.onchange = () => toggleDone(prod.id);
-			const label      = document.createElement('span'); label.textContent = prod.name;
+			const doneCheckbox   = document.createElement('input'); doneCheckbox.type = 'checkbox'; doneCheckbox.className = 'done-checkbox';
+			doneCheckbox.checked = prod.done; doneCheckbox.onchange = () => toggleDone(prod.id);
+			const doneLabel      = document.createElement('span'); doneLabel.textContent = prod.name;
+			
+			// Not ready of course.
+			const amount      = document.createElement('span');
+			amount.className = 'amount';
+			amount.textContent = `(${prod.count}x)`;
 
-			left.append(checkbox, label);
+			left.append(doneCheckbox, doneLabel, amount);
 
-			const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.innerHTML = '−'; deleteBtn.onclick = () => deleteProduct(prod.id);
+			const deleteCurrentBtn = document.createElement('button'); deleteCurrentBtn.className = 'delete-btn';
+			deleteCurrentBtn.innerHTML = '−';
+			deleteCurrentBtn.onclick = () => deleteProduct(prod.id);
 
-			item.append(left, deleteBtn);
-			done.appendChild(item);
+			doneItem.append(left, deleteCurrentBtn);
+			done.appendChild(doneItem);
 		}
 	});
 
@@ -188,10 +195,7 @@ document.getElementById('addDoneBtn').addEventListener('click', () => addDone())
 document.getElementById('exportJSON').addEventListener('click', () => exportJSON());
 document.getElementById('importJSON').addEventListener('click', () => importJSON());
 
-// Export/Import Buttons – füge diese in dein HTML ein:
-//   <button onclick="exportJSON()">💾 Exportieren</button>
-//   <button onclick="importJSON()">📂 Importieren</button>
-// Damit exportJSON/importJSON global erreichbar sind:
+// make exportJSON/importJSON globally accessible:
 window.exportJSON = exportJSON;
 window.importJSON = importJSON;
 
