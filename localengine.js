@@ -136,11 +136,23 @@ function renderList() {
 	products.forEach(prod => {
 		const item  = document.createElement('div'); item.className = 'product-item';
 		const label = document.createElement('span'); label.textContent = prod.name;
-
 		const controls = document.createElement('div'); controls.className = 'controls';
 		const upBtn    = document.createElement('button'); upBtn.className = 'arrow-btn'; upBtn.innerHTML = '▲'; upBtn.onclick = () => setCount(prod.id, +1);
 		const downBtn  = document.createElement('button'); downBtn.className = 'arrow-btn'; downBtn.innerHTML = '▼'; downBtn.onclick = () => setCount(prod.id, -1);
-		const count    = document.createElement('span'); count.className = 'count'; count.textContent = prod.count;
+		const count    = document.createElement('input')
+		count.setAttribute("type", "number");
+		count.setAttribute("pattern", "[0-9]+");
+		count.setAttribute("inputmode", "numeric");
+		count.setAttribute("min","0");
+		count.setAttribute("max","99");
+		count.addEventListener('keypress', (e) => {
+			if (e.charCode < 48 || e.charCode > 57) e.preventDefault();
+		});
+		count.addEventListener('input', () => {
+			count.value = count.value.replace(/[^0-9]/g, '');
+		});
+		count.required = true;
+		count.className = 'count'; count.value = prod.count;
 		controls.append(upBtn, count, downBtn);
 
 		const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.innerHTML = '−'; deleteBtn.onclick = () => deleteProduct(prod.id);

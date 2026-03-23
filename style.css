@@ -49,7 +49,7 @@ h2 {
 
 .controls {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 }
 
 .arrow-btn {
@@ -65,7 +65,7 @@ h2 {
 }
 
 .count {
-	width: 30px;
+	width: 5ex;
 	text-align: center;
 	font-size: 16px;
 }
