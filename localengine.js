@@ -134,7 +134,7 @@ function renderList() {
 	done.innerHTML = '';
 
 	products.forEach(prod => {
-		const item  = document.createElement('div'); item.className = 'product-item';
+		//const item  = document.createElement('div'); item.className = 'product-item';
 		const label = document.createElement('span'); label.textContent = prod.name;
 		const controls = document.createElement('div'); controls.className = 'controls';
 		const upBtn    = document.createElement('button'); upBtn.className = 'arrow-btn'; upBtn.innerHTML = '▲'; upBtn.onclick = () => setCount(prod.id, +1);
@@ -157,8 +157,9 @@ function renderList() {
 
 		const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.innerHTML = '−'; deleteBtn.onclick = () => deleteProduct(prod.id);
 
-		item.append(label, controls, deleteBtn);
-		list.appendChild(item);
+		//item.append(label, controls, deleteBtn);
+		list.append(label, controls, deleteBtn);
+		//list.appendChild(item);
 		
 		if(prod.count > 0){
 			const doneItem = document.createElement('div'); doneItem.className = 'done-item';

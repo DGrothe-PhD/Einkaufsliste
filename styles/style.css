@@ -3,6 +3,13 @@ body {
 	background: #fafafa;
 }
 
+main {
+  background-image: url('../assets/images/bg_hotchocolate.png');
+  background-repeat: repeat;
+  /* Small change, huge effect */
+  background-attachment: fixed;
+}
+
 header{
   padding: 0px 1em 0px 1em;
   background: papayawhip;
@@ -32,6 +39,13 @@ h2 {
 
 .product-list, .done-list {
 	margin-bottom: 28px;
+}
+
+.howmuchtobuy {
+	display: grid;
+	align-items: center;
+	grid-template-columns: auto auto auto;
+	justify-content: space-between;
 }
 
 .product-item {
@@ -77,6 +91,7 @@ h2 {
 	cursor: pointer;
 	font-size: 18px;
 	color: #b00;
+	width: 2em;
 	margin-left: 8px;
 	border-radius: 4px;
 }
