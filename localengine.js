@@ -65,6 +65,17 @@ function importJSON() {
 	input.click();
 }
 
+// --- Toggle and design ---
+const showLessBtn = document.getElementById('showLess');
+const listToToggle = document.getElementById('productList');
+
+showLessBtn.addEventListener('click', () => {
+  const isCollapsed = listToToggle.style.display === 'none';
+
+  listToToggle.style.display = isCollapsed ? '' : 'none';
+  showLessBtn.textContent = isCollapsed ? 'Weniger zeigen' : 'Mehr zeigen';
+});
+
 // --- Funktionen ---
 function generateId() {
 	return String(nextId++);
