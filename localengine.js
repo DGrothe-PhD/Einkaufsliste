@@ -144,13 +144,18 @@ function toggleDone(id) {
 	if (!p) return;
 	p.done = !p.done;
 	saveToStorage();
-	renderList();
+	const checkbox = document.querySelector(`input.done-checkbox[data-id="${id}"]`);
+		if (checkbox) {
+			checkbox.checked = p.done;
+	}
 }
 
 function deleteProduct(id) {
-	products = products.filter(p => p.id !== id);
+	const idx = products.findIndex(p => p.id === id);
+	if (idx === -1) return;
+	products.splice(idx, 1);
 	saveToStorage();
-	renderList();
+	document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.remove());
 }
 
 function updateHistory(name) {
@@ -176,17 +181,22 @@ function renderDoneList() {
 	products.forEach(prod => {
 		if (prod.count <= 0) return;
 
-		const doneItem = document.createElement('div'); doneItem.className = 'done-item';
+		const doneItem = document.createElement('div');
+		doneItem.className = 'done-item';
+		doneItem.setAttribute('data-id', prod.id); 
 		const left = document.createElement('div'); left.style.display = 'flex'; left.style.alignItems = 'center';
 
 		const doneCheckbox = document.createElement('input');
 		doneCheckbox.type = 'checkbox';
 		doneCheckbox.className = 'done-checkbox';
+		doneCheckbox.id = prod.name;
 		doneCheckbox.setAttribute('aria-label', `${prod.name} als erledigt markieren`);
 		doneCheckbox.checked = prod.done;
 		doneCheckbox.onchange = () => toggleDone(prod.id);
 
-		const doneLabel = document.createElement('span'); doneLabel.textContent = prod.name;
+		const doneLabel = document.createElement('label');
+		doneLabel.htmlFor = doneCheckbox.id;
+		doneLabel.innerText = prod.name;
 
 		const amount = document.createElement('span');
 		amount.className = 'amount';
@@ -198,8 +208,13 @@ function renderDoneList() {
 		deleteCurrentBtn.className = 'delete-btn';
 		deleteCurrentBtn.innerHTML = '−';
 		deleteCurrentBtn.setAttribute('aria-label', `${prod.name} entfernen`);
-		deleteCurrentBtn.onclick = () => deleteProduct(prod.id);
-
+		deleteCurrentBtn.onclick = () => {
+			const p = products.find(p => p.id === prod.id);
+			if (!p) return;
+			p.count = 0;
+			saveToStorage();
+			doneItem.remove();  // nur aus der Done-Liste entfernen
+		};
 		doneItem.append(left, deleteCurrentBtn);
 		done.appendChild(doneItem);
 	});
@@ -225,6 +240,10 @@ function renderList() {
 	list.innerHTML = '';
 
 	products.forEach(prod => {
+		const item = document.createElement('div');
+		item.className = 'product-item';
+		item.setAttribute('data-id', prod.id);
+		
 		const label = document.createElement('span'); label.textContent = prod.name;
 
 		const controls = document.createElement('div'); controls.className = 'controls';
@@ -274,7 +293,8 @@ function renderList() {
 		deleteBtn.setAttribute('aria-label', `${prod.name} aus der Liste entfernen`);
 		deleteBtn.onclick = () => deleteProduct(prod.id);
 
-		list.append(label, controls, deleteBtn);
+		item.append(label, controls, deleteBtn);
+		list.appendChild(item);
 	});
 
 	// Render the right-hand panel too

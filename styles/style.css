@@ -32,7 +32,7 @@ header a, button{
 .container {
 	display: flex;
 	flex-wrap: wrap;
-	width: 40vw;
+	width: 45vw;
 	margin-inline: 40px;
 	background: #fff;
 	border: 1px solid #eee;
@@ -58,9 +58,11 @@ h2 {
 }
 
 .product-item {
-	display: flex;
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: subgrid;
 	align-items: center;
-	justify-content: space-between;
+	/*justify-content: space-between;*/
 	padding: 8px 0;
 	border-bottom: 1px solid #eee;
 }
