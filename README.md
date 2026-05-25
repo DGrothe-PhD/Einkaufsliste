@@ -1,6 +1,12 @@
 # Einkaufsliste
 Eine browserfähige Einkaufsliste, minimalistisch angelegt.
 
+## Barrierefreiheit
+Die Barrierefreiheit wird regelmäßig getestet.
+Es sind schon Computer lesbare Labels 
+und ein nutzerfreundliche Navigation enthalten.
+Farbkontrast wird als nächstes optimiert.
+
 ## Designquelle
 * UI basiert auf einem [vorherigen Projekt](https://github.com/LeniNoni/EinkaufslisteDadi/), ist aber technisch runderneuert, und zwar
   * Fehlerbehebung
