@@ -32,13 +32,19 @@ header a, button{
 .container {
 	display: flex;
 	flex-wrap: wrap;
-	width: 45vw;
+	width: clamp(450px, 60vw, 700px);
 	margin-inline: 40px;
 	background: #fff;
 	border: 1px solid #eee;
 	border-radius: 8px;
 	padding: 24px 20px;
 	justify-content: space-around;
+}
+
+.scroll-container {
+  height: clamp(200px, 80vh, 400px);
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 h2 {
