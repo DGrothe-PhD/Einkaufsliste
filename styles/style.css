@@ -32,13 +32,17 @@ header a, button{
 .container {
 	display: flex;
 	flex-wrap: wrap;
-	width: clamp(450px, 60vw, 700px);
+	width: clamp(450px, 70vw, 900px);
 	margin-inline: 40px;
 	background: #fff;
 	border: 1px solid #eee;
 	border-radius: 8px;
 	padding: 24px 20px;
 	justify-content: space-around;
+}
+
+#showLess{
+  margin-bottom: 0.5em;
 }
 
 .scroll-container {
@@ -54,6 +58,7 @@ h2 {
 
 .product-list, .done-list {
 	margin-bottom: 28px;
+	max-width: min(80vw, 400px);
 }
 
 .howmuchtobuy {
@@ -71,6 +76,10 @@ h2 {
 	/*justify-content: space-between;*/
 	padding: 8px 0;
 	border-bottom: 1px solid #eee;
+}
+
+.product-item:first-child {
+	text-wrap: pretty;
 }
 
 .amount{

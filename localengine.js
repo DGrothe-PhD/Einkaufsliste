@@ -244,7 +244,8 @@ function renderList() {
 		item.className = 'product-item';
 		item.setAttribute('data-id', prod.id);
 		
-		const label = document.createElement('span'); label.textContent = prod.name;
+		const label = document.createElement('span');
+		label.textContent = prod.name;
 
 		const controls = document.createElement('div'); controls.className = 'controls';
 
