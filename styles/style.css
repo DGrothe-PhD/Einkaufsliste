@@ -68,6 +68,15 @@ h2 {
 	justify-content: space-between;
 }
 
+.gottobuy {
+	display: grid;
+	align-items: center;
+	margin-inline: 0.5em;
+	grid-template-columns: auto;/* auto;*/
+	column-gap: 0.5em;
+	justify-content: space-between;
+}
+
 .product-item {
 	display: grid;
 	grid-column: 1 / -1;
