@@ -150,6 +150,45 @@ function toggleDone(id) {
 	}
 }
 
+// --- Drag and Drop ---
+let draggedElement = null;
+
+function enableDragAndDrop() {
+	const list = document.getElementById('productList');
+	
+	list.addEventListener('dragstart', (e) => {
+		if (e.target.classList.contains('product-item')) {
+			draggedElement = e.target;
+			e.target.style.opacity = '0.5';
+			e.dataTransfer.effectAllowed = 'move';
+		}
+	});
+
+	list.addEventListener('dragend', (e) => {
+		if (e.target.classList.contains('product-item')) {
+			e.target.style.opacity = '1';
+			draggedElement = null;
+		}
+	});
+
+	list.addEventListener('dragover', (e) => {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'move';
+		
+		const item = e.target.closest('.product-item');
+		if (item && item !== draggedElement) {
+			const rect = item.getBoundingClientRect();
+			const midpoint = rect.top + rect.height / 2;
+			
+			if (e.clientY < midpoint) {
+				item.parentNode.insertBefore(draggedElement, item);
+			} else {
+				item.parentNode.insertBefore(draggedElement, item.nextSibling);
+			}
+		}
+	});
+}
+
 function deleteProduct(id) {
 	const idx = products.findIndex(p => p.id === id);
 	if (idx === -1) return;
@@ -242,6 +281,7 @@ function renderList() {
 	products.forEach(prod => {
 		const item = document.createElement('div');
 		item.className = 'product-item';
+		item.draggable = true;
 		item.setAttribute('data-id', prod.id);
 		
 		const label = document.createElement('span');
@@ -318,3 +358,4 @@ window.importJSON = importJSON;
 // --- Init ---
 loadFromStorage();
 renderList();
+enableDragAndDrop();

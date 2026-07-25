@@ -87,8 +87,18 @@ h2 {
 	border-bottom: 1px solid #eee;
 }
 
+/* Decorating draggable items */
 .product-item:first-child {
 	text-wrap: pretty;
+}
+
+.product-item {
+	transition: opacity 0.2s;
+	cursor: grab;
+}
+
+.product-item:active {
+	cursor: grabbing;
 }
 
 .amount{
