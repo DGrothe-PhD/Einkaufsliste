@@ -56,6 +56,13 @@ function updateSaveButtonVisibility() {
 	}
 }
 
+function initAutoSaveBtn(){
+	const toggle = document.getElementById('autoSaveToggle');
+	if (toggle) {
+		toggle.textContent = autoSaveEnabled ? '✓ Auto-Save: ON' : '⊘ Auto-Save: OFF';
+	}
+}
+
 function toggleAutoSave() {
 	autoSaveEnabled = !autoSaveEnabled;
 	localStorage.setItem(AUTO_SAVE_KEY, autoSaveEnabled.toString());
@@ -429,5 +436,6 @@ window.importJSON = importJSON;
 // --- Init ---
 loadFromStorage();
 renderList();
+initAutoSaveBtn();
 enableDragAndDrop();
 updateSaveButtonVisibility();
