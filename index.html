@@ -9,7 +9,13 @@
   <header>
     <h1>Einkaufsliste</h1>
   <nav>
-  <button id="exportJSON">💾 Exportieren</button>
+  <button id="exportJSON">💾 Exportieren (stale)</button>
+  </nav>
+  <nav>
+  <button id="saveChangesBtn">💾 Speichern</button>
+  </nav>
+  <nav>
+  <button id="autoSaveToggle">AutoSave</button>
   </nav>
   <nav>
   <button id="importJSON">📂 Importieren</button>
@@ -42,7 +48,7 @@
 						<input type="text" class="add-input" id="addDoneInput" placeholder="...">
 						<button class="add-btn" id="addDoneBtn">+</button>
 					</div>
-				<div id="doneList"></div>
+				<div class="gottobuy scroll-container" id="doneList"></div>
 				</div>
 			</div>
 		</div>

@@ -3,10 +3,14 @@
 // Ersetzt Firebase durch localStorage + manuellen JSON-Export/Import
 
 const STORAGE_KEY = 'einkaufsliste';
+const AUTO_SAVE_KEY = 'einkaufsliste_autosave';
 
 let products = [];
 let history = {};
 let nextId = 1;
+let autoSaveEnabled = true;
+let draggedElement = null;
+let hasUnsavedChanges = false;
 
 // --- Persistenz ---
 function loadFromStorage() {
@@ -17,6 +21,8 @@ function loadFromStorage() {
 			products = data.products || [];
 			history  = data.history  || {};
 			nextId   = data.nextId   || (products.length + 1);
+			const autoSaveSetting = localStorage.getItem(AUTO_SAVE_KEY);
+			autoSaveEnabled = autoSaveSetting !== 'false'; // default true
 		}
 	} catch(e) {
 		console.warn('Fehler beim Laden aus localStorage:', e);
@@ -26,6 +32,51 @@ function loadFromStorage() {
 function saveToStorage() {
 	const data = { products, history, nextId };
 	localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+	hasUnsavedChanges = false;
+	updateSaveButtonVisibility();
+}
+
+function markAsChanged() {
+	hasUnsavedChanges = true;
+	if (autoSaveEnabled) {
+		saveToStorage();
+	} else {
+		updateSaveButtonVisibility();
+	}
+}
+
+function updateSaveButtonVisibility() {
+	const saveBtn = document.getElementById('saveChangesBtn');
+	if (saveBtn) {
+		if (!autoSaveEnabled && hasUnsavedChanges) {
+			saveBtn.style.display = 'inline-block';
+		} else {
+			saveBtn.style.display = 'none';
+		}
+	}
+}
+
+function initAutoSaveBtn(){
+	const toggle = document.getElementById('autoSaveToggle');
+	if (toggle) {
+		toggle.textContent = autoSaveEnabled ? '✓ Auto-Save: ON' : '⊘ Auto-Save: OFF';
+	}
+}
+
+function toggleAutoSave() {
+	autoSaveEnabled = !autoSaveEnabled;
+	localStorage.setItem(AUTO_SAVE_KEY, autoSaveEnabled.toString());
+	
+	const toggle = document.getElementById('autoSaveToggle');
+	if (toggle) {
+		toggle.textContent = autoSaveEnabled ? '✓ Auto-Save: ON' : '⊘ Auto-Save: OFF';
+	}
+	
+	if (autoSaveEnabled && hasUnsavedChanges) {
+		saveToStorage();
+	} else {
+		updateSaveButtonVisibility();
+	}
 }
 
 // --- Export / Import ---
@@ -86,7 +137,7 @@ function addProduct() {
 	if (!name) return;
 	products.push({ id: generateId(), name, count: 1, done: false });
 	updateHistory(name);
-	saveToStorage();
+	markAsChanged();
 	renderList();
 	input.value = '';
 }
@@ -97,7 +148,7 @@ function addDone() {
 	if (!name) return;
 	products.push({ id: generateId(), name, count: 0, done: false });
 	updateHistory(name);
-	saveToStorage();
+	markAsChanged();
 	renderList();
 	input.value = '';
 }
@@ -109,7 +160,7 @@ function setCount(id, delta) {
 	const p = products.find(p => p.id === id);
 	if (!p) return;
 	p.count = Math.max(0, p.count + delta);
-	saveToStorage();
+	markAsChanged();
 
 	// Update the count input in-place
 	const countInput = document.querySelector(`input.count[data-id="${id}"]`);
@@ -129,7 +180,7 @@ function setCountFromInput(id, value) {
 	if (!p) return;
 	const parsed = parseInt(value, 10);
 	p.count = isNaN(parsed) ? 0 : Math.max(0, Math.min(99, parsed));
-	saveToStorage();
+	markAsChanged();
 	// Normalise the field in case the user typed something out-of-range
 	const countInput = document.querySelector(`input.count[data-id="${id}"]`);
 	if (countInput) {
@@ -143,18 +194,71 @@ function toggleDone(id) {
 	const p = products.find(p => p.id === id);
 	if (!p) return;
 	p.done = !p.done;
-	saveToStorage();
+	markAsChanged();
 	const checkbox = document.querySelector(`input.done-checkbox[data-id="${id}"]`);
 		if (checkbox) {
 			checkbox.checked = p.done;
 	}
 }
 
+// --- Drag and Drop ---
+function enableDragAndDrop() {
+	const list = document.getElementById('productList');
+	
+	list.addEventListener('dragstart', (e) => {
+		if (e.target.classList.contains('product-item')) {
+			draggedElement = e.target;
+			e.target.style.opacity = '0.5';
+			e.dataTransfer.effectAllowed = 'move';
+		}
+	});
+
+	list.addEventListener('dragend', (e) => {
+		if (e.target.classList.contains('product-item')) {
+			e.target.style.opacity = '1';
+			draggedElement = null;
+		}
+	});
+
+	list.addEventListener('dragover', (e) => {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'move';
+		
+		const item = e.target.closest('.product-item');
+		if (item && item !== draggedElement) {
+			const rect = item.getBoundingClientRect();
+			const midpoint = rect.top + rect.height / 2;
+			
+			if (e.clientY < midpoint) {
+				item.parentNode.insertBefore(draggedElement, item);
+			} else {
+				item.parentNode.insertBefore(draggedElement, item.nextSibling);
+			}
+		}
+	});
+	
+	list.addEventListener('drop', (e) => {
+		e.preventDefault();
+		// Sync products array with new visual order
+		syncProductOrder();
+		markAsChanged();
+	});
+}
+
+function syncProductOrder() {
+	const list = document.getElementById('productList');
+	const items = Array.from(list.querySelectorAll('.product-item'));
+	const newOrder = items.map(item => item.getAttribute('data-id'));
+	
+	// Reorder products array to match visual order
+	products.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id));
+}
+
 function deleteProduct(id) {
 	const idx = products.findIndex(p => p.id === id);
 	if (idx === -1) return;
 	products.splice(idx, 1);
-	saveToStorage();
+	markAsChanged();
 	document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.remove());
 }
 
@@ -165,7 +269,7 @@ function updateHistory(name) {
 function addProductByName(name) {
 	products.push({ id: generateId(), name, count: 1, done: false });
 	updateHistory(name);
-	saveToStorage();
+	markAsChanged();
 	renderList();
 }
 
@@ -212,7 +316,7 @@ function renderDoneList() {
 			const p = products.find(p => p.id === prod.id);
 			if (!p) return;
 			p.count = 0;
-			saveToStorage();
+			markAsChanged();
 			doneItem.remove();  // nur aus der Done-Liste entfernen
 		};
 		doneItem.append(left, deleteCurrentBtn);
@@ -242,6 +346,7 @@ function renderList() {
 	products.forEach(prod => {
 		const item = document.createElement('div');
 		item.className = 'product-item';
+		item.draggable = true;
 		item.setAttribute('data-id', prod.id);
 		
 		const label = document.createElement('span');
@@ -311,6 +416,19 @@ document.getElementById('addDoneBtn').addEventListener('click', () => addDone())
 document.getElementById('exportJSON').addEventListener('click', () => exportJSON());
 document.getElementById('importJSON').addEventListener('click', () => importJSON());
 
+// Auto-save toggle
+const autoSaveToggle = document.getElementById('autoSaveToggle');
+if (autoSaveToggle) {
+	autoSaveToggle.addEventListener('click', toggleAutoSave);
+}
+
+// Save changes button
+const saveChangesBtn = document.getElementById('saveChangesBtn');
+if (saveChangesBtn) {
+	saveChangesBtn.addEventListener('click', saveToStorage);
+}
+
+
 // make exportJSON/importJSON globally accessible:
 window.exportJSON = exportJSON;
 window.importJSON = importJSON;
@@ -318,3 +436,6 @@ window.importJSON = importJSON;
 // --- Init ---
 loadFromStorage();
 renderList();
+initAutoSaveBtn();
+enableDragAndDrop();
+updateSaveButtonVisibility();

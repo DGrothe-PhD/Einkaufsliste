@@ -68,6 +68,15 @@ h2 {
 	justify-content: space-between;
 }
 
+.gottobuy {
+	display: grid;
+	align-items: center;
+	margin-inline: 0.5em;
+	grid-template-columns: auto;/* auto;*/
+	column-gap: 0.5em;
+	justify-content: space-between;
+}
+
 .product-item {
 	display: grid;
 	grid-column: 1 / -1;
@@ -78,8 +87,18 @@ h2 {
 	border-bottom: 1px solid #eee;
 }
 
+/* Decorating draggable items */
 .product-item:first-child {
 	text-wrap: pretty;
+}
+
+.product-item {
+	transition: opacity 0.2s;
+	cursor: grab;
+}
+
+.product-item:active {
+	cursor: grabbing;
 }
 
 .amount{
