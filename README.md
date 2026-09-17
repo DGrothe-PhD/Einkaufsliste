@@ -1,9 +1,17 @@
 # Einkaufsliste
 Eine browserfähige Einkaufsliste, minimalistisch angelegt.
 
+## Wie es funktioniert
+* Zweispaltiges Design
+  * Links: Häufig gekaufte Produkte mit einstellbaren Mengenangaben
+  * Rechts: Checkliste für den Einkauf im Geschäft
+* Automatische Speicherung (abschaltbar)
+* Dinge, die in der linken Hälfte auf die Menge Null gesetzt sind, erscheinen nicht auf der Checkliste.
+* Einträge lassen sich von Hand sortieren und sortieren sich auf der Checkliste bei Änderungen mit.
+
 ## Barrierefreiheit
 Die Barrierefreiheit wird regelmäßig getestet.
-Es sind schon Computer lesbare Labels 
+Es sind schon computerlesbare Labels 
 und ein nutzerfreundliche Navigation enthalten.
 Farbkontrast wird als nächstes optimiert.
 
@@ -16,6 +24,7 @@ Farbkontrast wird als nächstes optimiert.
 ## Nächste Updates — Ideensammlung:
 * Mengenangaben
 * Emojis
-* Sortierung nach Einkaufsweg in gängigen deutschen Supermärkten
+* Sortierung nach Kategorie und näherungsweise Einkaufsweg in gängigen Supermärkten
 * Filter nach Ladenketten
-* PDF-Erzeugung bzw. Select/Copy all zu lesbarem Nachrichtenversand via E-Mail oder euren Lieblingsmessengerapps.
+* Select/Copy all zu lesbarem Nachrichtenversand via E-Mail oder euren Lieblingsmessengerapps.
+* Übersetzung
